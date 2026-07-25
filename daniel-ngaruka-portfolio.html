@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daniel Ngaruka — Full-Stack Web Developer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0A0E1A;
+    --bg-elevated: #0E1424;
+    --surface: #131B2E;
+    --surface-2: #171F35;
+    --border: #232E48;
+    --text: #E9EDF6;
+    --text-muted: #8D96AC;
+    --text-dim: #5C6680;
+    --teal: #4FD8C4;
+    --teal-dim: rgba(79,216,196,0.12);
+    --amber: #F2A65A;
+    --amber-dim: rgba(242,166,90,0.12);
+    --radius: 10px;
+    --maxw: 1120px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter', sans-serif;
+    font-size:16px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  h1,h2,h3,h4{font-family:'Space Grotesk', sans-serif; font-weight:600; letter-spacing:-0.02em;}
+  .mono{font-family:'JetBrains Mono', monospace;}
+  a{color:inherit; text-decoration:none;}
+  ::selection{background:var(--teal-dim); color:var(--teal);}
+  :focus-visible{outline:2px solid var(--teal); outline-offset:3px;}
+
+  /* background node field */
+  .node-field{
+    position:fixed; inset:0; z-index:0; pointer-events:none; opacity:0.5;
+  }
+  .node-field svg{width:100%; height:100%;}
+
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 32px; position:relative; z-index:2;}
+
+  /* NAV */
+  nav{
+    position:sticky; top:0; z-index:50;
+    backdrop-filter:blur(14px);
+    background:rgba(10,14,26,0.72);
+    border-bottom:1px solid var(--border);
+  }
+  .navbar{
+    max-width:var(--maxw); margin:0 auto; padding:16px 32px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .brand{display:flex; align-items:center; gap:10px; font-family:'Space Grotesk'; font-weight:600; font-size:16px;}
+  .brand .dot{width:8px; height:8px; border-radius:50%; background:var(--teal); box-shadow:0 0 8px var(--teal);}
+  .navlinks{display:flex; gap:28px; font-family:'JetBrains Mono'; font-size:13px; color:var(--text-muted);}
+  .navlinks a{transition:color .2s;}
+  .navlinks a:hover{color:var(--teal);}
+  .nav-cta{
+    font-family:'JetBrains Mono'; font-size:13px; padding:8px 16px;
+    border:1px solid var(--teal); border-radius:6px; color:var(--teal);
+    transition:all .2s;
+  }
+  .nav-cta:hover{background:var(--teal-dim);}
+  .navtoggle{display:none; flex-direction:column; gap:4px; cursor:pointer; background:none; border:none;}
+  .navtoggle span{width:22px; height:2px; background:var(--text);}
+
+  /* HERO */
+  .hero{
+    padding:110px 0 90px;
+    display:grid; grid-template-columns:1.2fr 0.8fr; gap:60px; align-items:center;
+  }
+  .status-badge{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:'JetBrains Mono'; font-size:12.5px; color:var(--teal);
+    background:var(--teal-dim); border:1px solid rgba(79,216,196,0.3);
+    padding:6px 12px; border-radius:20px; margin-bottom:22px;
+  }
+  .pulse-dot{width:7px; height:7px; border-radius:50%; background:var(--teal); position:relative;}
+  .pulse-dot::after{
+    content:''; position:absolute; inset:-4px; border-radius:50%;
+    border:1px solid var(--teal); animation:pulse 2s infinite;
+  }
+  @keyframes pulse{ 0%{transform:scale(0.6); opacity:1;} 100%{transform:scale(2); opacity:0;} }
+
+  .eyebrow{font-family:'JetBrains Mono'; font-size:13px; color:var(--text-dim); margin-bottom:14px;}
+  .eyebrow::before{content:'$ '; color:var(--amber);}
+
+  .hero h1{font-size:56px; line-height:1.05; margin-bottom:18px;}
+  .hero h1 .accent{color:var(--teal);}
+  .role-line{
+    font-family:'JetBrains Mono'; font-size:16px; color:var(--text-muted);
+    min-height:24px; margin-bottom:26px; display:flex; align-items:center;
+  }
+  .role-line .cursor{display:inline-block; width:9px; height:18px; background:var(--teal); margin-left:2px; animation:blink 1s steps(1) infinite;}
+  @keyframes blink{50%{opacity:0;}}
+
+  .hero p.lead{color:var(--text-muted); max-width:520px; margin-bottom:34px; font-size:16px;}
+
+  .hero-actions{display:flex; gap:14px; flex-wrap:wrap; margin-bottom:40px;}
+  .btn{
+    font-family:'Inter'; font-weight:600; font-size:14.5px;
+    padding:13px 24px; border-radius:8px; display:inline-flex; align-items:center; gap:8px;
+    transition:all .2s ease; cursor:pointer;
+  }
+  .btn-primary{background:var(--teal); color:#0A0E1A;}
+  .btn-primary:hover{transform:translateY(-2px); box-shadow:0 8px 24px rgba(79,216,196,0.25);}
+  .btn-ghost{border:1px solid var(--border); color:var(--text);}
+  .btn-ghost:hover{border-color:var(--teal); color:var(--teal);}
+
+  .quicklinks{display:flex; gap:20px; font-family:'JetBrains Mono'; font-size:13px; color:var(--text-dim);}
+  .quicklinks a{display:flex; align-items:center; gap:6px; transition:color .2s;}
+  .quicklinks a:hover{color:var(--text);}
+
+  /* photo frame */
+  .photo-frame{
+    position:relative; width:100%; aspect-ratio:1/1.05; border-radius:16px;
+    border:1.5px dashed rgba(141,150,172,0.4);
+    background:linear-gradient(160deg, var(--surface), var(--bg-elevated));
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:14px; overflow:hidden;
+  }
+  .photo-frame::before{
+    content:''; position:absolute; inset:0;
+    background-image:radial-gradient(circle at 1px 1px, rgba(255,255,255,0.06) 1px, transparent 0);
+    background-size:18px 18px;
+  }
+  .photo-frame .icon{
+    width:64px; height:64px; border-radius:50%; border:1.5px solid var(--text-dim);
+    display:flex; align-items:center; justify-content:center; color:var(--text-dim);
+    position:relative; z-index:1;
+  }
+  .photo-frame .cap{font-family:'JetBrains Mono'; font-size:12px; color:var(--text-dim); position:relative; z-index:1; text-align:center; padding:0 30px;}
+  .photo-frame .corner{position:absolute; width:18px; height:18px; border:2px solid var(--teal); opacity:0.6; z-index:2;}
+  .photo-frame .c-tl{top:14px; left:14px; border-right:none; border-bottom:none;}
+  .photo-frame .c-br{bottom:14px; right:14px; border-left:none; border-top:none;}
+  .photo-frame img.profile-img{width:100%; height:100%; object-fit:cover; position:relative; z-index:1;}
+
+  /* SECTION shared */
+  section{padding:90px 0; position:relative;}
+  .section-head{margin-bottom:48px;}
+  .section-head h2{font-size:32px; margin-bottom:8px;}
+  .section-head .eyebrow{margin-bottom:10px;}
+  .section-head p{color:var(--text-muted); max-width:560px; font-size:15px;}
+
+  .divider{height:1px; background:linear-gradient(90deg, transparent, var(--border), transparent);}
+
+  /* ABOUT */
+  .about-grid{display:grid; grid-template-columns:2fr 1fr; gap:50px;}
+  .about-grid p{color:var(--text-muted); margin-bottom:16px; font-size:15.5px;}
+  .about-grid p strong{color:var(--text); font-weight:600;}
+  .stat-list{display:flex; flex-direction:column; gap:20px;}
+  .stat{border-left:2px solid var(--teal); padding-left:16px;}
+  .stat .num{font-family:'Space Grotesk'; font-size:26px; font-weight:600;}
+  .stat .label{font-family:'JetBrains Mono'; font-size:12px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.04em;}
+
+  /* TIMELINE (experience & education) */
+  .timeline{position:relative; padding-left:32px;}
+  .timeline::before{
+    content:''; position:absolute; left:5px; top:6px; bottom:6px; width:1.5px;
+    background:linear-gradient(var(--teal), var(--border));
+  }
+  .t-item{position:relative; padding-bottom:44px;}
+  .t-item:last-child{padding-bottom:0;}
+  .t-node{
+    position:absolute; left:-32px; top:4px; width:11px; height:11px; border-radius:50%;
+    background:var(--bg); border:2px solid var(--teal);
+  }
+  .t-date{font-family:'JetBrains Mono'; font-size:12.5px; color:var(--teal); margin-bottom:6px; display:block;}
+  .t-item h3{font-size:18px; margin-bottom:2px;}
+  .t-item .t-sub{color:var(--text-muted); font-size:14px; margin-bottom:10px; font-style:italic;}
+  .t-item p.desc{color:var(--text-muted); font-size:14.5px; max-width:600px;}
+
+  /* PROJECTS */
+  .proj-grid{display:grid; grid-template-columns:repeat(2, 1fr); gap:22px;}
+  .proj-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:0; overflow:hidden; display:flex; flex-direction:column;
+    transition:transform .25s ease, border-color .25s ease;
+  }
+  .proj-card:hover{transform:translateY(-4px); border-color:rgba(79,216,196,0.4);}
+  .proj-thumb{
+    aspect-ratio:16/9; border-bottom:1px dashed var(--border);
+    background:repeating-linear-gradient(135deg, var(--bg-elevated), var(--bg-elevated) 10px, var(--surface-2) 10px, var(--surface-2) 20px);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'JetBrains Mono'; font-size:11.5px; color:var(--text-dim); letter-spacing:0.03em;
+    overflow:hidden;
+  }
+  .proj-thumb img.proj-img{
+    width:100%; height:100%; object-fit:cover; transition:transform .3s ease;
+  }
+  .proj-card:hover .proj-img{
+    transform:scale(1.05);
+  }
+  .proj-body{padding:22px 24px 24px;}
+  .proj-tag{
+    display:inline-block; font-family:'JetBrains Mono'; font-size:10.5px; color:var(--amber);
+    background:var(--amber-dim); padding:3px 9px; border-radius:20px; margin-bottom:12px;
+    text-transform:uppercase; letter-spacing:0.05em;
+  }
+  .proj-card h3{font-size:19px; margin-bottom:8px;}
+  .proj-card p{color:var(--text-muted); font-size:14px; margin-bottom:16px;}
+  .stack{display:flex; flex-wrap:wrap; gap:8px;}
+  .stack span{
+    font-family:'JetBrains Mono'; font-size:11px; color:var(--text-muted);
+    border:1px solid var(--border); padding:4px 9px; border-radius:5px;
+  }
+
+  /* SKILLS */
+  .skill-groups{display:grid; grid-template-columns:repeat(2, 1fr); gap:36px 50px;}
+  .skill-group h4{font-family:'JetBrains Mono'; font-size:12.5px; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:16px;}
+  .pill-row{display:flex; flex-wrap:wrap; gap:10px;}
+  .pill{
+    font-family:'JetBrains Mono'; font-size:12.5px; color:var(--text);
+    border:1px solid var(--border); background:var(--surface);
+    padding:7px 13px; border-radius:6px; display:flex; align-items:center; gap:7px;
+  }
+  .pill .ind{width:6px; height:6px; border-radius:50%; background:var(--teal);}
+  .pill.amber .ind{background:var(--amber);}
+
+  /* AWARDS */
+  .award-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:22px;}
+  .award-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:26px; display:flex; gap:18px; align-items:flex-start;
+  }
+  .award-icon{
+    width:44px; height:44px; border-radius:10px; background:var(--amber-dim);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0; color:var(--amber);
+  }
+  .award-card h4{font-size:16px; margin-bottom:6px;}
+  .award-card p{font-size:13.5px; color:var(--text-muted);}
+
+  /* LANGUAGES */
+  .lang-row{display:grid; grid-template-columns:repeat(4,1fr); gap:18px;}
+  .lang-card{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:20px;}
+  .lang-card .name{font-family:'Space Grotesk'; font-weight:600; font-size:15px; margin-bottom:10px;}
+  .lang-bar{display:flex; gap:4px;}
+  .lang-bar .seg{height:5px; flex:1; border-radius:3px; background:var(--border);}
+  .lang-bar .seg.on{background:var(--teal);}
+
+  /* CONTACT / FOOTER */
+  .contact-box{
+    background:linear-gradient(150deg, var(--surface), var(--bg-elevated));
+    border:1px solid var(--border); border-radius:16px; padding:56px;
+    text-align:center; position:relative; overflow:hidden;
+  }
+  .contact-box h2{font-size:34px; margin-bottom:14px;}
+  .contact-box p{color:var(--text-muted); max-width:480px; margin:0 auto 30px;}
+  .contact-actions{display:flex; gap:16px; justify-content:center; flex-wrap:wrap;}
+
+  footer{padding:40px 0 60px; text-align:center;}
+  footer .foot-links{display:flex; gap:24px; justify-content:center; font-family:'JetBrains Mono'; font-size:12.5px; color:var(--text-dim); margin-bottom:16px; flex-wrap:wrap;}
+  footer .foot-links a:hover{color:var(--teal);}
+  footer .copy{font-size:12px; color:var(--text-dim);}
+
+  /* reveal on scroll */
+  .reveal{opacity:0; transform:translateY(18px); transition:opacity .6s ease, transform .6s ease;}
+  .reveal.in{opacity:1; transform:translateY(0);}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important;}
+  }
+
+  /* RESPONSIVE */
+  @media (max-width:860px){
+    .hero{grid-template-columns:1fr; padding-top:90px;}
+    .hero-media{order:-1; max-width:280px; margin:0 auto 20px;}
+    .about-grid{grid-template-columns:1fr;}
+    .proj-grid{grid-template-columns:1fr;}
+    .skill-groups{grid-template-columns:1fr;}
+    .award-grid{grid-template-columns:1fr;}
+    .lang-row{grid-template-columns:repeat(2,1fr);}
+    .navlinks{display:none;}
+    .navtoggle{display:flex;}
+    .hero h1{font-size:38px;}
+    .contact-box{padding:36px 24px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="node-field" aria-hidden="true">
+  <svg viewBox="0 0 1200 900" preserveAspectRatio="xMidYMid slice">
+    <g stroke="#1B2438" stroke-width="1">
+      <line x1="80" y1="120" x2="320" y2="60"/>
+      <line x1="320" y1="60" x2="560" y2="140"/>
+      <line x1="560" y1="140" x2="880" y2="90"/>
+      <line x1="880" y1="90" x2="1120" y2="180"/>
+      <line x1="80" y1="120" x2="240" y2="320"/>
+      <line x1="240" y1="320" x2="520" y2="420"/>
+      <line x1="520" y1="420" x2="780" y2="360"/>
+      <line x1="780" y1="360" x2="1050" y2="460"/>
+      <line x1="1050" y1="460" x2="1150" y2="700"/>
+      <line x1="520" y1="420" x2="480" y2="680"/>
+      <line x1="480" y1="680" x2="720" y2="800"/>
+      <line x1="240" y1="320" x2="120" y2="600"/>
+      <line x1="120" y1="600" x2="360" y2="820"/>
+    </g>
+    <g fill="#2A3654">
+      <circle cx="80" cy="120" r="3"/>
+      <circle cx="320" cy="60" r="3"/>
+      <circle cx="560" cy="140" r="3"/>
+      <circle cx="880" cy="90" r="3"/>
+      <circle cx="1120" cy="180" r="3"/>
+      <circle cx="240" cy="320" r="3"/>
+      <circle cx="520" cy="420" r="3"/>
+      <circle cx="780" cy="360" r="3"/>
+      <circle cx="1050" cy="460" r="3"/>
+      <circle cx="1150" cy="700" r="3"/>
+      <circle cx="480" cy="680" r="3"/>
+      <circle cx="720" cy="800" r="3"/>
+      <circle cx="120" cy="600" r="3"/>
+      <circle cx="360" cy="820" r="3"/>
+    </g>
+  </svg>
+</div>
+
+<nav>
+  <div class="navbar">
+    <div class="brand"><span class="dot"></span>Daniel Ngaruka</div>
+    <div class="navlinks">
+      <a href="#about">~/about</a>
+      <a href="#experience">~/experience</a>
+      <a href="#projects">~/projects</a>
+      <a href="#skills">~/skills</a>
+      <a href="#education">~/education</a>
+    </div>
+    <a href="#contact" class="nav-cta">Contact</a>
+    <button class="navtoggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <section class="hero" id="top">
+    <div class="hero-copy">
+      <div class="status-badge"><span class="pulse-dot"></span>Available for internships &amp; freelance work</div>
+      <div class="eyebrow mono">whoami</div>
+      <h1>Daniel Ngaruka —<br>building <span class="accent">full-stack</span> systems,<br>leading real teams.</h1>
+      <div class="role-line mono"><span id="roleText">Computer Science Student</span><span class="cursor"></span></div>
+      <p class="lead">Based in Kigali, Rwanda. I design and ship web platforms end to end — from database schema to deployed UI — and I've led science-club teams and hackathon squads along the way. Currently a second-year CS student at U.o.K.</p>
+      <div class="hero-actions">
+        <a href="#projects" class="btn btn-primary">View Projects →</a>
+        <a href="#contact" class="btn btn-ghost">Get in Touch</a>
+      </div>
+      <div class="quicklinks">
+        <a href="https://github.com/daniel7nrk" target="_blank" rel="noopener">github.com/daniel7nrk</a>
+        <a href="mailto:ngarukadaniel122@gmail.com">ngarukadaniel122@gmail.com</a>
+        <a href="tel:+250796695709">+250 79-669-5709</a>
+      </div>
+    </div>
+    <div class="hero-media">
+      <div class="photo-frame">
+        <span class="corner c-tl"></span><span class="corner c-br"></span>
+        <img src="myphoto.jpg" alt="Daniel Ngaruka" class="profile-img">
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="section-head reveal">
+      <div class="eyebrow mono">cat about.md</div>
+      <h2>About</h2>
+    </div>
+    <div class="about-grid reveal">
+      <div>
+        <p>I'm a <strong>Computer Science student at the University of Kigali (U.o.K)</strong>, currently in my second year, building a foundation in programming, problem-solving, and software development. Alongside my studies, I work as a <strong>freelance full-stack web developer</strong>, building and maintaining production platforms for real clients — from a student learning resource site to an online TV-subscription marketplace.</p>
+        <p>What sets my work apart is the combination of two skill sets that don't usually sit in the same person: I build <strong>web applications</strong> end-to-end, and I also work hands-on with <strong>networking infrastructure</strong> — routing, VLANs, and DHCP configuration — giving me a systems-level understanding of how the applications I build actually reach people.</p>
+        <p>I also lead. I've served as an active leader of science clubs through school, and in 2026 I took <strong>1st place at a Google-organized hackathon</strong>, contributing problem-solving and team leadership to a winning build under time pressure.</p>
+      </div>
+      <div class="stat-list">
+        <div class="stat"><div class="num">2nd Year</div><div class="label mono">B.Sc Computer Science</div></div>
+        <div class="stat"><div class="num">1st Place</div><div class="label mono">Google Hackathon Winner</div></div>
+        <div class="stat"><div class="num">4</div><div class="label mono">Languages Spoken</div></div>
+        <div class="stat"><div class="num">5+</div><div class="label mono">Platforms Shipped</div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- EXPERIENCE -->
+  <section id="experience">
+    <div class="section-head reveal">
+      <div class="eyebrow mono">ls experience/</div>
+      <h2>Experience</h2>
+      <p>Freelance and client engagements building production web platforms.</p>
+    </div>
+    <div class="timeline reveal">
+      <div class="t-item">
+        <span class="t-node"></span>
+        <span class="t-date mono">MARCH 2026 — MARCH 2026</span>
+        <h3>Full-Stack Developer</h3>
+        <div class="t-sub">M. Pascal (Remote) — Online TV Subscription Platform</div>
+        <p class="desc">Built a platform where users browse, compare, and purchase TV subscription plans online. Redesigned the package and pricing display to make plan comparison simple and accessible for non-technical users.</p>
+      </div>
+      <div class="t-item">
+        <span class="t-node"></span>
+        <span class="t-date mono">AUGUST 2025 — PRESENT</span>
+        <h3>Full-Stack Developer</h3>
+        <div class="t-sub">M. Vent (Remote) — Student Learning Website</div>
+        <p class="desc">Developed and maintain a student-focused learning platform for sharing educational resources. Structured and organized content architecture to make learning materials easier to navigate and access.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="section-head reveal">
+      <div class="eyebrow mono">ls -la projects/</div>
+      <h2>Selected Projects</h2>
+      <p>Independent builds spanning healthcare access, food delivery, and property tech.</p>
+    </div>
+    <div class="proj-grid reveal">
+
+      <div class="proj-card">
+        <div class="proj-thumb">
+          <img src="medical%20link.png" alt="Medical LinkAfrica" class="proj-img">
+        </div>
+        <div class="proj-body">
+          <span class="proj-tag">Healthcare</span>
+          <h3>Medical LinkAfrica</h3>
+          <p>A platform that helps patients find and purchase prescribed medication online. After a hospital visit, patients often struggle to locate rare medicines across multiple pharmacies — this connects them directly to pharmacies that have the required stock, cutting the time and stress of the search.</p>
+          <div class="stack"><span>Web App</span><span>E-commerce</span><span>Pharmacy Network</span></div>
+          <div class="stack" style="margin-top:12px;"><a href="https://medicallinkafrica.netlify.app/" target="_blank" rel="noopener" style="color:var(--teal); font-family:'JetBrains Mono'; font-size:12.5px;">medicallinkafrica.netlify.app →</a></div>
+        </div>
+      </div>
+
+      <div class="proj-card">
+        <div class="proj-thumb">
+          <img src="delibox.png" alt="Delibox" class="proj-img">
+        </div>
+        <div class="proj-body">
+          <span class="proj-tag">Food Delivery</span>
+          <h3>Delibox</h3>
+          <p>A food delivery web app built from the ground up — from a static site through a Supabase-backed admin dashboard with full CRUD for menu items, categories, and staff, to live menu management. Deployed on Vercel with Supabase as the backend.</p>
+          <div class="stack"><span>Supabase</span><span>Vercel</span><span>Admin Dashboard</span></div>
+          <div class="stack" style="margin-top:12px;"><a href="https://deliboxrw.vercel.app" target="_blank" rel="noopener" style="color:var(--teal); font-family:'JetBrains Mono'; font-size:12.5px;">deliboxrw.vercel.app →</a></div>
+        </div>
+      </div>
+
+      <div class="proj-card">
+        <div class="proj-thumb">
+          <img src="homehub.png" alt="HomeHub Rwanda" class="proj-img">
+        </div>
+        <div class="proj-body">
+          <span class="proj-tag">PropTech</span>
+          <h3>HomeHub Rwanda</h3>
+          <p>A full-stack rental platform concept built for the Rwandan market, with NLP-powered search to match renters to listings faster. Contributed to the technical blueprint and problem-definition work for the team's group presentation.</p>
+          <div class="stack"><span>Next.js</span><span>TypeScript</span><span>PostgreSQL</span><span>Prisma</span></div>
+          <div class="stack" style="margin-top:12px;"><a href="https://homehub-rwanda.vercel.app/" target="_blank" rel="noopener" style="color:var(--teal); font-family:'JetBrains Mono'; font-size:12.5px;">homehub-rwanda.vercel.app →</a></div>
+        </div>
+      </div>
+
+      <div class="proj-card">
+        <div class="proj-thumb">
+          <img src="congo%20Exam%20Prep.png" alt="Congo Exam Prep" class="proj-img">
+        </div>
+        <div class="proj-body">
+          <span class="proj-tag">EdTech</span>
+          <h3>Congo Exam Prep</h3>
+          <p>A web platform for students preparing for the EXETAT national exams, offering real past questions with detailed corrections and explanations, plus progress tracking so students can see where they're improving.</p>
+          <div class="stack"><span>Firebase</span><span>Web App</span><span>Progress Tracking</span></div>
+          <div class="stack" style="margin-top:12px;"><a href="https://congo-exam-prep.web.app/" target="_blank" rel="noopener" style="color:var(--teal); font-family:'JetBrains Mono'; font-size:12.5px;">congo-exam-prep.web.app →</a></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="section-head reveal">
+      <div class="eyebrow mono">cat skills.json</div>
+      <h2>Skills</h2>
+    </div>
+    <div class="skill-groups reveal">
+      <div class="skill-group">
+        <h4>Frontend</h4>
+        <div class="pill-row">
+          <span class="pill"><span class="ind"></span>HTML5</span>
+          <span class="pill"><span class="ind"></span>Tailwind CSS</span>
+          <span class="pill"><span class="ind"></span>JavaScript (ES6+)</span>
+          <span class="pill"><span class="ind"></span>Next.js</span>
+          <span class="pill"><span class="ind"></span>TypeScript</span>
+          <span class="pill"><span class="ind"></span>Figma</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <h4>Backend &amp; Infrastructure</h4>
+        <div class="pill-row">
+          <span class="pill"><span class="ind"></span>Supabase</span>
+          <span class="pill"><span class="ind"></span>PostgreSQL</span>
+          <span class="pill"><span class="ind"></span>Prisma</span>
+          <span class="pill"><span class="ind"></span>Vercel</span>
+          <span class="pill"><span class="ind"></span>Git &amp; GitHub</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <h4>Networking (Cisco Packet Tracer)</h4>
+        <div class="pill-row">
+          <span class="pill"><span class="ind"></span>Inter-VLAN Routing</span>
+          <span class="pill"><span class="ind"></span>DHCP Relay</span>
+          <span class="pill"><span class="ind"></span>RIPv2</span>
+          <span class="pill"><span class="ind"></span>AAA / RADIUS</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <h4>Leadership &amp; Collaboration</h4>
+        <div class="pill-row">
+          <span class="pill amber"><span class="ind"></span>Team Leadership</span>
+          <span class="pill amber"><span class="ind"></span>Communication</span>
+          <span class="pill amber"><span class="ind"></span>Problem-Solving</span>
+          <span class="pill amber"><span class="ind"></span>Project Ownership</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- EDUCATION -->
+  <section id="education">
+    <div class="section-head reveal">
+      <div class="eyebrow mono">ls education/</div>
+      <h2>Education</h2>
+    </div>
+    <div class="timeline reveal">
+      <div class="t-item">
+        <span class="t-node"></span>
+        <span class="t-date mono">MAY 2024 — PRESENT</span>
+        <h3>Bachelor's in Computer Science</h3>
+        <div class="t-sub">University of Kigali (U.o.K), Gasabo</div>
+        <p class="desc">Second-year student building strong foundations in programming, problem-solving, and software development.</p>
+      </div>
+      <div class="t-item">
+        <span class="t-node"></span>
+        <span class="t-date mono">JANUARY 2017 — SEPTEMBER 2022</span>
+        <h3>High School Diploma</h3>
+        <div class="t-sub">I.F.A.K de DonBosco, Gasabo</div>
+        <p class="desc">Completed O-Level and A-Level studies with a focus on PCM (Physics, Chemistry, Mathematics). Served as a leader in the Science Club.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- AWARDS -->
+  <section id="awards">
+    <div class="section-head reveal">
+      <div class="eyebrow mono">cat awards.log</div>
+      <h2>Awards &amp; Certifications</h2>
+    </div>
+    <div class="award-grid reveal">
+      <div class="award-card">
+        <div class="award-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 21h8M12 17v4M7 4h10v4a5 5 0 01-10 0V4z"/><path d="M5 4H3v2a4 4 0 004 4M19 4h2v2a4 4 0 01-4 4"/></svg>
+        </div>
+        <div>
+          <h4>1st Place — Google Hackathon</h4>
+          <p>Won first place in a competitive hackathon organized by Google, demonstrating strong problem-solving, teamwork, and innovative thinking in building a working tech solution under time pressure.</p>
+        </div>
+      </div>
+      <div class="award-card">
+        <div class="award-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3l8 4-8 4-8-4 8-4zM4 11l8 4 8-4M4 15l8 4 8-4"/></svg>
+        </div>
+        <div>
+          <h4>French Language Certificate</h4>
+          <p>Successfully completed and certified in French language proficiency.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- LANGUAGES -->
+  <section id="languages">
+    <div class="section-head reveal">
+      <div class="eyebrow mono">locale -a</div>
+      <h2>Languages</h2>
+    </div>
+    <div class="lang-row reveal">
+      <div class="lang-card"><div class="name">English</div><div class="lang-bar"><span class="seg on"></span><span class="seg on"></span><span class="seg on"></span><span class="seg on"></span></div></div>
+      <div class="lang-card"><div class="name">French</div><div class="lang-bar"><span class="seg on"></span><span class="seg on"></span><span class="seg on"></span><span class="seg on"></span></div></div>
+      <div class="lang-card"><div class="name">Kinyarwanda</div><div class="lang-bar"><span class="seg on"></span><span class="seg on"></span><span class="seg on"></span><span class="seg on"></span></div></div>
+      <div class="lang-card"><div class="name">Kiswahili</div><div class="lang-bar"><span class="seg on"></span><span class="seg on"></span><span class="seg on"></span><span class="seg"></span></div></div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="contact-box reveal">
+      <div class="eyebrow mono" style="justify-content:center; display:flex;">ping daniel --start</div>
+      <h2>Let's build something.</h2>
+      <p>Open to internships, freelance web development work, and collaborations. Based in Kigali, Rwanda — working with clients and teams remotely.</p>
+      <div class="contact-actions">
+        <a href="mailto:ngarukadaniel122@gmail.com" class="btn btn-primary">ngarukadaniel122@gmail.com</a>
+        <a href="tel:+250796695709" class="btn btn-ghost">+250 79-669-5709</a>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div class="foot-links">
+    <a href="https://github.com/daniel7nrk" target="_blank" rel="noopener">GitHub</a>
+    <a href="mailto:ngarukadaniel122@gmail.com">Email</a>
+    <a href="tel:+250796695709">Phone</a>
+    <span>Kigali City, Gasabo, Rwanda</span>
+  </div>
+  <div class="copy mono">© 2026 Daniel Ngaruka. Built with intent.</div>
+</footer>
+
+<script>
+  // typewriter role rotation
+  const roles = ["Computer Science Student", "Full-Stack Web Developer", "Team Leader"];
+  const roleEl = document.getElementById('roleText');
+  let ri = 0, ci = 0, deleting = false;
+
+  function typeLoop(){
+    const current = roles[ri];
+    if(!deleting){
+      ci++;
+      roleEl.textContent = current.slice(0, ci);
+      if(ci === current.length){ deleting = true; setTimeout(typeLoop, 1400); return; }
+    } else {
+      ci--;
+      roleEl.textContent = current.slice(0, ci);
+      if(ci === 0){ deleting = false; ri = (ri+1) % roles.length; }
+    }
+    setTimeout(typeLoop, deleting ? 40 : 65);
+  }
+  typeLoop();
+
+  // scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, {threshold:0.12});
+  revealEls.forEach(el=>io.observe(el));
+
+  // mobile nav toggle (simple show/hide of links as a stacked menu)
+  const toggle = document.querySelector('.navtoggle');
+  const links = document.querySelector('.navlinks');
+  toggle.addEventListener('click', ()=>{
+    const open = links.style.display === 'flex';
+    links.style.display = open ? 'none' : 'flex';
+    links.style.flexDirection = 'column';
+    links.style.position = 'absolute';
+    links.style.top = '60px';
+    links.style.right = '32px';
+    links.style.background = 'rgba(10,14,26,0.98)';
+    links.style.border = '1px solid #232E48';
+    links.style.borderRadius = '10px';
+    links.style.padding = '16px 20px';
+    links.style.gap = '14px';
+  });
+</script>
+
+</body>
+</html>
