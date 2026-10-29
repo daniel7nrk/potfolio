@@ -1,0 +1,12 @@
+      <!-- <div class="proj-card">
+        <div class="proj-thumb">
+          <img src="assets/delibox.png" alt="Delibox" class="proj-img">
+        </div>
+        <div class="proj-body">
+          <span class="proj-tag">Food Delivery</span>
+          <h3>Delibox</h3>
+          <p>A food delivery web app built from the ground up — from a static site through a Supabase-backed admin dashboard with full CRUD for menu items, categories, and staff, to live menu management. Deployed on Vercel with Supabase as the backend.</p>
+          <div class="stack"><span>Supabase</span><span>Vercel</span><span>Admin Dashboard</span></div>
+          <div class="stack" style="margin-top:12px;"><a href="https://deliboxrw.vercel.app" target="_blank" rel="noopener" style="color:var(--teal); font-family:'JetBrains Mono'; font-size:12.5px;">deliboxrw.vercel.app →</a></div>
+        </div>
+      </div> -->
